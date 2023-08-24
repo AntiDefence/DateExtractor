@@ -1,0 +1,1 @@
+Run this code, and it will keep asking for the start and end dates of work experience until you type "Done". Then it will calculate and display the total work experience in days, without considering overlapping periods.
