@@ -1,0 +1,56 @@
+from datetime import datetime
+
+def parse_date(date_str):
+    return datetime.strptime(date_str, "%d.%m.%Y")
+
+def merge_intervals(intervals):
+    if not intervals:
+        return []
+    
+    intervals.sort(key=lambda x: x[0])
+    merged_intervals = [intervals[0]]
+    
+    for current_start, current_end in intervals[1:]:
+        last_start, last_end = merged_intervals[-1]
+        
+        if current_start <= last_end:
+            merged_intervals[-1] = (last_start, max(last_end, current_end))
+        else:
+            merged_intervals.append((current_start, current_end))
+            
+    return merged_intervals
+
+def calculate_duration(intervals):
+    total_duration = 0
+    for start, end in intervals:
+        total_duration += (end - start).days + 1  # "+1" to include the start date as a day of work
+    return total_duration
+
+if __name__ == "__main__":
+    intervals = []
+    
+    while True:
+        date_range = input("Enter the start and end dates of the work experience (DD.MM.YYYY-DD.MM.YYYY) or type 'Done': ")
+        
+        if date_range.lower() == 'done':
+            break
+        
+        try:
+            start_date_str, end_date_str = date_range.split("-")
+            start_date = parse_date(start_date_str)
+            end_date = parse_date(end_date_str)
+            
+            if start_date > end_date:
+                print("The start date cannot be after the end date. Try again.")
+                continue
+            
+            intervals.append((start_date, end_date))
+            
+        except ValueError:
+            print("Invalid format. Please enter the date range as DD.MM.YYYY-DD.MM.YYYY.")
+            continue
+    
+    merged_intervals = merge_intervals(intervals)
+    total_duration = calculate_duration(merged_intervals)
+    
+    print(f"Total work experience duration is {total_duration} days.")
